@@ -1,0 +1,85 @@
+原始方式理思路：不会采用
+view代码
+def user_add(request):
+    # 用字典控制
+    context = {
+        'gender_choices':models.UserInfo.gender_choices,
+        'depart_list':models.Department.objects.all()
+    }
+
+    return render(request,"user_add.html",context)
+
+html代码
+      <div class="col-md-6">
+                        <label>部门</label>
+                        <select class="form-control">
+                            {% for depart in depart_list %}
+                                <option value={{ depart.id }}>{{ depart.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>性别</label>
+
+                        <select class="form-control">
+                            {% for gender in gender_choices %}
+                                <option value={{ gender.0 }}>{{ gender.1 }}</option>
+                            {% endfor %}
+                        </select>
+
+1、用户提交数据需要校验
+2、输入错误页面提示
+3、页面上，每一个字段需要重写
+4、关联数据需要手动获取，并循环展示
+
+Django组件
+    Form组件
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ModelForm组件(适合对表进行增删改查)
+定义models类
+from django import forms
+class MyForm(forms.ModelForm):
+    class Meta:
+        model = models.UserInfo
+        fields = [
+            "name",
+            "password",
+            "age",
+            "account",
+            "create_time",
+            "depart",
+            "gender"
+
+        ]
+
+
+    模板代码
+        组件内容通过循环方式来进行查询
+                   {% for obj in form %}
+                        <div class="col-md-6">
+                            <label>{{ obj.label }}:</label>
+                            {{ obj }}
+                        </div>
+
+                    {% endfor %}
+
+      <label>{{ obj.label }}:</label> 代表取models中的verbose_name的值
+
+
+  输出一个对象时想要定制输出内容可以用__str__来定义
+
+
+

@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    <div class="container">
+        <div style="margin-bottom: 10px">
+            <a class="btn btn-success" href="/user/add/">新建用户ModuleForm</a>{# target="_blank" target添加为跳转到新页面 #}
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="ant-calendar-month-panel-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                     class="bi bi-emoji-smile-upside-down" viewBox="0 0 16 16">
+                    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0-1a8 8 0 1 1 0 16A8 8 0 0 1 8 0z"/>
+                    <path d="M4.285 6.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 4.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 3.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 9.5C7 8.672 6.552 8 6 8s-1 .672-1 1.5.448 1.5 1 1.5 1-.672 1-1.5zm4 0c0-.828-.448-1.5-1-1.5s-1 .672-1 1.5.448 1.5 1 1.5 1-.672 1-1.5z"/>
+                </svg>
+                用户列表
+            </div>
+
+            <!-- Table -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th>密码</th>
+                    <th>性别</th>
+                    <th>年龄</th>
+                    <th>账户余额</th>
+                    <th>部门</th>
+                    <th>入职时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for info in userinfo %}
+                    <tr>
+                        <th>{{ info.id }}</th>
+                        <th>{{ info.name }}</th>
+                        <th>{{ info.password }}</th>
+                        <th>{{ info.get_gender_display }}</th>
+
+                        <th>{{ info.age }}</th>
+                        <th>{{ info.account }}</th>
+                        <th>{{ info.depart.title }}</th>
+                        <th>{{ info.create_time|date:"Y-m-d" }}</th>{# 模板语法中时间处理方式 #}
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/user/{{ info.id }}/update">编辑</a>
+                            <a class="btn btn-danger btn-xs" href="#">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

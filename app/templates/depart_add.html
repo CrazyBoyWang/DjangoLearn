@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="table">
+                <div class="table-light">新建部门</div>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        <label class="col-sm-2 col-form-label">标题</label>
+                        <input type="text" class="form-control" name="title">
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">保 存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
