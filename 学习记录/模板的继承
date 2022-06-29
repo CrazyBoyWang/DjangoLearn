@@ -1,0 +1,9 @@
+部门列表
+添加模板
+编辑部门
+
+新建一个html将通用模板内容放在里面，再用下面的方式进行关联起来
+{% extends 'layout.html' %}
+{% block content %}
+
+{% endblock %}
