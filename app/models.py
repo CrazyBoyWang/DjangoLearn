@@ -20,7 +20,7 @@ class UserInfo(models.Model):
     age = models.IntegerField(verbose_name="年龄")
     account = models.DecimalField(verbose_name="账户余额", max_digits=10, decimal_places=2, default=0)  # 精准小数
 
-    create_time = models.DateTimeField(verbose_name="入职时间")
+    create_time = models.DateField(verbose_name="入职时间")
 
     # 无约束写法
     # depart_id = models.BigIntegerField(verbose_name="部门id")
@@ -54,3 +54,20 @@ class UserInfo(models.Model):
     2、置空部门id
     
 """
+
+
+class PrettyNum(models.Model):
+    mobile = models.CharField(verbose_name="电话号", max_length=32)
+    price = models.IntegerField(verbose_name="价格",default=100)
+    level_choice = (
+        (1, "初级"),
+        (2, "中级"),
+        (3, "高级"),
+    )
+
+    level = models.SmallIntegerField(verbose_name="会员等级", choices=level_choice,default=1)
+    status_choice =(
+        (1, "未占用"),
+        (2, "已占用")
+    )
+    status = models.SmallIntegerField(verbose_name="是否占用", choices=status_choice, default=1)

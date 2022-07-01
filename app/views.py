@@ -26,6 +26,18 @@ class MyForm(forms.ModelForm):
             field.widget.attrs = {"class": "form-control", "placeholder": field.label}  # 定义插件方法
 
 
+class PrettyNum(forms.ModelForm):
+    class Meta:
+        model = models.PrettyNum
+        fields = "__all__" # 表示显示自定义的所有字段
+        # exclude = ['name'] # 表示排除哪个字段
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {"class": "form-control"}
+
+
 # Create your views here.
 def depart_list(request):
     """部门列表"""
@@ -105,20 +117,40 @@ def user_add(request):
         return render(request, "user_add.html", {"form": form})
 
 
-def user_update(request,nid):
-    #根据id获取数据
-    if request.method=="GET":
-
-        user_ojb = models.UserInfo.objects.filter(id = nid).first() # 查询要修改的数据信息
-        form = MyForm(instance=user_ojb) # 将要修改的信息赋值在ModelForm插件中并在前端展示
-
-        return render(request, "user_update.html", {'nid': nid,'form':form})
+def user_update(request, nid):
+    # 根据id获取数据
     user_ojb = models.UserInfo.objects.filter(id=nid).first()  # 查询要修改的数据信息
-    form = MyForm(request.POST,instance=user_ojb)
+    if request.method == "GET":
+        form = MyForm(instance=user_ojb)  # 将要修改的信息赋值在ModelForm插件中并在前端展示
+        return render(request, "user_update.html", {'nid': nid, 'form': form})
+    form = MyForm(request.POST, instance=user_ojb)
     if form.is_valid():
+        # form.instance.字段名= 数据 如果想添加别的字段的内容
         form.save()
         return redirect("/user/list/")
     else:
-       print( form.errors.as_json())
+        print(form.errors.as_json())
+        return render(request, "user_update.html", {'nid': nid, 'form': form})
 
 
+def user_delete(request, nid):
+    models.UserInfo.objects.filter(id=nid).delete()
+    return redirect("/user/list/")
+
+
+def prettynum_list(request):
+    info = models.PrettyNum.objects.all().order_by("-level")  # 通过会员等级方式倒叙排序
+    return render(request, "prettynum_list.html", {'info': info})
+
+
+def prettynum_add(request):
+
+    if request.method == "GET":
+        pre = PrettyNum()
+        return render(request, "prettynum_add.html", {"pre": pre})
+    pre = PrettyNum(data=request.POST)
+    if pre.is_valid():
+        pre.save()
+        return redirect("/prettynum/list/")
+    else:
+        return render(request, "prettynum_add.html", {"pre": pre})
