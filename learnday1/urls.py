@@ -36,5 +36,7 @@ urlpatterns = [
     # 靓号管理
     path('prettynum/list/',views.prettynum_list),
     path('prettynum/add/', views.prettynum_add),
+    path('prettynum/<int:nid>/update/', views.prettynum_update),
+    path('prettynum/<int:nid>/delete/', views.prettynum_delete),
 
 ]

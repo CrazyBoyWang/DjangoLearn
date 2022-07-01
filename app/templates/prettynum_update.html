@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+   <div class="container">
+        <div class="panel panel-default">
+            <div class="table">
+                <div class="table-light">编辑靓号</div>
+            </div>
+            <div class="panel-body">
+                <form method="post" novalidate><!--novalidate去掉界面信息判断-->
+                    {% csrf_token %}
+                    {% for obj in pre %}
+                        <div class="col-md-6" >
+                            {{ obj.label }}: {{ obj }}
+                            <span style="color: red">{{ obj.errors.0 }}</span>
+                        </div>
+                    {% endfor %}
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary" >保 存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

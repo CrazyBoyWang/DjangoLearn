@@ -1,3 +1,7 @@
+import re
+
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from app import models
 from django import forms
@@ -27,15 +31,29 @@ class MyForm(forms.ModelForm):
 
 
 class PrettyNum(forms.ModelForm):
+    mobile = forms.CharField(  # 单独校验规则，。关于手机号正则校验
+        label="电话号",
+        validators=[RegexValidator(r'^1[3-9]\d{9}$', '手机号输入错误')],
+    )
+
     class Meta:
         model = models.PrettyNum
-        fields = "__all__" # 表示显示自定义的所有字段
+        fields = "__all__"  # 表示显示自定义的所有字段
         # exclude = ['name'] # 表示排除哪个字段
+
+    # 验证方式2.钩子方法
+    # def clean_mobile(self):
+    #     mobile = self.cleaned_data['mobile']  # 获取对应的字段
+    #     parttn = re.compile(r"^((\d{3,4}-)?\d{7,8})$|(1[3-9][0-9]{9})")  # 设置正则验证
+    #     if parttn.match(mobile):
+    #         return mobile
+    #     else:
+    #         raise ValidationError("格式错误")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            field.widget.attrs = {"class": "form-control"}
+            field.widget.attrs = {"class": "form-control", "placeholder": field.label}
 
 
 # Create your views here.
@@ -144,7 +162,6 @@ def prettynum_list(request):
 
 
 def prettynum_add(request):
-
     if request.method == "GET":
         pre = PrettyNum()
         return render(request, "prettynum_add.html", {"pre": pre})
@@ -154,3 +171,23 @@ def prettynum_add(request):
         return redirect("/prettynum/list/")
     else:
         return render(request, "prettynum_add.html", {"pre": pre})
+
+
+def prettynum_update(request, nid):
+    prelist = models.PrettyNum.objects.filter(id=nid).first()
+    if request.method == "GET":
+        pre = PrettyNum(instance=prelist)
+        return render(request, "prettynum_update.html", {'pre': pre})
+    pre = PrettyNum(data=request.POST, instance=prelist)
+    if pre.is_valid():
+        pre.save()
+        return redirect("/prettynum/list/")
+    else:
+        return render(request, "prettynum_update.html", {'pre': pre})
+
+
+
+def prettynum_delete(request, nid):
+    models.PrettyNum.objects.filter(id=nid).delete()
+
+    return redirect("/prettynum/list/")
