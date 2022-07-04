@@ -30,10 +30,12 @@ class MyForm(forms.ModelForm):
             field.widget.attrs = {"class": "form-control", "placeholder": field.label}  # 定义插件方法
 
 
+# 验证手机号输入是否正确
 class PrettyNum(forms.ModelForm):
     mobile = forms.CharField(  # 单独校验规则，。关于手机号正则校验
         label="电话号",
         validators=[RegexValidator(r'^1[3-9]\d{9}$', '手机号输入错误')],
+
     )
 
     class Meta:
@@ -41,19 +43,45 @@ class PrettyNum(forms.ModelForm):
         fields = "__all__"  # 表示显示自定义的所有字段
         # exclude = ['name'] # 表示排除哪个字段
 
-    # 验证方式2.钩子方法
-    # def clean_mobile(self):
-    #     mobile = self.cleaned_data['mobile']  # 获取对应的字段
-    #     parttn = re.compile(r"^((\d{3,4}-)?\d{7,8})$|(1[3-9][0-9]{9})")  # 设置正则验证
-    #     if parttn.match(mobile):
-    #         return mobile
-    #     else:
-    #         raise ValidationError("格式错误")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {"class": "form-control", "placeholder": field.label}
+
+    #  钩子方法 手机号不能重复
+    def clean_mobile(self):
+        mobile = self.cleaned_data['mobile']  # 获取对应的字段
+        # exits = models.PrettyNum.objects.exclude(id=self.instance.pk).filter(mobile=mobile).exists()
+        exits = models.PrettyNum.objects.filter(mobile=mobile).exists()
+        if exits:
+            raise ValidationError("该手机号码已存在")
+        return mobile
+
+
+class PrettyNum_edit(forms.ModelForm):
+    mobile = forms.CharField(  # 单独校验规则，。关于手机号正则校验
+        label="电话号",
+        validators=[RegexValidator(r'^1[3-9]\d{9}$', '手机号输入错误')],
+
+    )
+
+    class Meta:
+        model = models.PrettyNum
+        fields = "__all__"  # 表示显示自定义的所有字段
+        # exclude = ['name'] # 表示排除哪个字段
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs = {"class": "form-control", "placeholder": field.label}
+
+    #  钩子方法 手机号不能重复，查找排除自身之外的手机还是否有重复
+    def clean_mobile(self):
+        mobile = self.cleaned_data['mobile']  # 获取对应的字段
+        exits = models.PrettyNum.objects.exclude(id=self.instance.pk).filter(mobile=mobile).exists()
+        if exits:
+            raise ValidationError("该手机号码已存在")
+        return mobile
 
 
 # Create your views here.
@@ -157,8 +185,14 @@ def user_delete(request, nid):
 
 
 def prettynum_list(request):
-    info = models.PrettyNum.objects.all().order_by("-level")  # 通过会员等级方式倒叙排序
-    return render(request, "prettynum_list.html", {'info': info})
+    # 模糊搜索功能
+    dict_list = {}
+    search = request.GET.get("query", "")  # ""后面默认值为空值
+    if search:
+        dict_list["mobile__contains"] = search
+    # 通过会员等级方式倒叙排序，**dict_list为获取字典内容写法
+    info = models.PrettyNum.objects.filter(**dict_list).order_by("-level")
+    return render(request, "prettynum_list.html", {'info': info, 'search': search})
 
 
 def prettynum_add(request):
@@ -176,15 +210,14 @@ def prettynum_add(request):
 def prettynum_update(request, nid):
     prelist = models.PrettyNum.objects.filter(id=nid).first()
     if request.method == "GET":
-        pre = PrettyNum(instance=prelist)
+        pre = PrettyNum_edit(instance=prelist)
         return render(request, "prettynum_update.html", {'pre': pre})
-    pre = PrettyNum(data=request.POST, instance=prelist)
+    pre = PrettyNum_edit(data=request.POST, instance=prelist)
     if pre.is_valid():
         pre.save()
         return redirect("/prettynum/list/")
     else:
         return render(request, "prettynum_update.html", {'pre': pre})
-
 
 
 def prettynum_delete(request, nid):

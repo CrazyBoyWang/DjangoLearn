@@ -1,0 +1,20 @@
+models.PrettyNum.objects.filter(id=nid)
+a = {
+"mobile":"1354263462",
+"id":43134
+}
+models.PrettyNum.objects.filter(**a) 如果a中为空。则默认获取所有
+
+下面内容在字典中也适用
+整数筛选
+models.PrettyNum.objects.filter(id__gt=1) 大于写法
+models.PrettyNum.objects.filter(id__gte=1) 大于等于写法
+models.PrettyNum.objects.filter(id__lt=1) 小于写法
+models.PrettyNum.objects.filter(id__lte=1) 小于等于写法
+
+
+
+字符串搜索
+models.PrettyNum.objects.filter(str__startswith="这个") 筛选以"这个"开头
+models.PrettyNum.objects.filter(str__endswith="这个") 筛选以"这个"结尾
+models.PrettyNum.objects.filter(str__contains="这个") 筛选包含"这个"
