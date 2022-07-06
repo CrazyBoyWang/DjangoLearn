@@ -7,7 +7,8 @@
         </div>
         <div style="float: right">
             <form class="d-flex" role="search" method="get">
-                <input class="form-control me-2" name="query" type="search" placeholder="手机号" aria-label="Search" value={{ search }}>
+                <input class="form-control me-2" name="query" type="search" placeholder="手机号" aria-label="Search"
+                       value={{ search }}>
                 <button class="btn btn-outline-success" type="submit">搜索</button>
             </form>
         </div>
@@ -54,10 +55,14 @@
             </table>
         </div>
     </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {{ up_page }}
+            {{ page_string }}
+            {{ down_page }}
 
-
-
-
+        </ul>
+    </nav>
 
 
 

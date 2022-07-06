@@ -1,8 +1,8 @@
-import re
-
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
+from django.utils.safestring import mark_safe
+
 from app import models
 from django import forms
 
@@ -190,9 +190,76 @@ def prettynum_list(request):
     search = request.GET.get("query", "")  # ""后面默认值为空值
     if search:
         dict_list["mobile__contains"] = search
+
+    # 分页处理
+    # 根据用户想要访问的页码计算出旗帜位置
+    page = int(request.GET.get('page', 1))
+    # 分页写法models.PrettyNum.objects.filter(**dict_list).order_by("-level")[0:10]
+    page_size = 10
+    start = (page - 1) * page_size
+    end = page * page_size
+    info = models.PrettyNum.objects.filter(**dict_list).order_by("-level")[start:end]
+    # 页码
+    """
+    <li class="page-item"><a class="page-link" href="/prettynum/list/">1</a></li>
+    <li class="page-item"><a class="page-link" href="/prettynum/list/">2</a></li>
+    <li class="page-item"><a class="page-link" href="/prettynum/list/">3</a></li>
+    """
+    total = models.PrettyNum.objects.filter(**dict_list).order_by("-level").count()  # 获取符合条件的总条数
+    total_page, div = divmod(total, page_size)
+    if div:
+        total_page += 1
+    page_str_list = []
+    # 计算当前页前5页和后5页
+    plus = 5
+    if total_page <= 2 * plus + 1:  # 如果不满足长度则限制最大页数
+        start_page = 1
+        end_page = total_page
+    else:  # 如果数据量过多。要判断0页之前问题
+        if page <= plus:
+            start_page = 1
+            end_page = 2 * plus + 1
+        else:
+            # 当前页大于5
+            if (page + plus) > total_page:
+                start_page = total_page - 2 * plus
+                end_page = total_page
+            else:
+                start_page = page - plus
+                end_page = page + plus
+
+    for i in range(start_page, end_page + 1):
+        if i == page:
+            ele = '<li class="page-item active"><a class="page-link" href="?page={}">{}</a></li>'.format(i, i)
+        else:
+            ele = '<li class="page-item"><a class="page-link" href="?page={}">{}</a></li>'.format(i, i)
+        page_str_list.append(ele)
+    page_string = mark_safe("".join(page_str_list))  # mark_safe标记string为安全
+
+    # 上一页
+    if page > 1:
+        up_page='<li class="page-item"><a class="page-link" href="?page={}" aria-label="Previous"><span ' \
+        'aria-hidden="true">&laquo;</span></a></li> '.format(page -1)
+    else:
+        up_page = '<li class="page-item"><a class="page-link" href="?page={}" aria-label="Previous"><span ' \
+        'aria-hidden="true">&laquo;</span></a></li> '.format(1)
+    up_str_page = mark_safe("".join(up_page))
+
+    # 下一页
+    if page < total_page:
+        down_page='<li class="page-item"><a class="page-link" href="?page={}" aria-label="Next"><span ' \
+        'aria-hidden="true">»</span></a></li> '.format(page + 1)
+    else:
+        down_page = '<li class="page-item"><a class="page-link" href="?page={}" aria-label="Next"><span ' \
+        'aria-hidden="true">»</span></a></li> '.format(total_page)
+    down_str_page = mark_safe("".join(down_page))
+
+
+
+
     # 通过会员等级方式倒叙排序，**dict_list为获取字典内容写法
-    info = models.PrettyNum.objects.filter(**dict_list).order_by("-level")
-    return render(request, "prettynum_list.html", {'info': info, 'search': search})
+    # info = models.PrettyNum.objects.filter(**dict_list).order_by("-level")
+    return render(request, "prettynum_list.html", {'info': info, 'search': search, 'page_string': page_string,'up_page':up_str_page,'down_page':down_str_page})
 
 
 def prettynum_add(request):
