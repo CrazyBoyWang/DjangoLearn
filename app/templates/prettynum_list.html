@@ -6,10 +6,10 @@
             <a class="btn btn-success" href="/prettynum/add/">新建靓号ModuleForm</a>{# target="_blank" target添加为跳转到新页面 #}
         </div>
         <div style="float: right">
-            <form class="d-flex" role="search" method="get">
-                <input class="form-control me-2" name="query" type="search" placeholder="手机号" aria-label="Search"
-                       value={{ search }}>
-                <button class="btn btn-outline-success" type="submit">搜索</button>
+            <form class="d-flex " role="search" method="get">
+                <input class="text me-2" name="query" placeholder="手机号" aria-label="Search"
+                       value={{ search }} >
+                <button class="btn btn-outline-success" type="submit" >搜索</button>
             </form>
         </div>
 
@@ -54,15 +54,13 @@
                 </tbody>
             </table>
         </div>
-    </div>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            {{ up_page }}
-            {{ page_string }}
-            {{ down_page }}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {{ page_string }}
+            </ul>
+        </nav>
 
-        </ul>
-    </nav>
+    </div>
 
 
 
