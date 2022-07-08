@@ -1,11 +1,12 @@
-from django.core.validators import RegexValidator
+from django import forms
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.shortcuts import render, redirect
-from django.utils.safestring import mark_safe
 
 from app import models
-from django import forms
 from app.utils.pagination import Pagination
+
+
 class MyForm(forms.ModelForm):
     # 下面为通用校验方式，入过对某些字段进行单独校验需要使用原始写法
     class Meta:
@@ -89,14 +90,19 @@ def depart_list(request):
     # 数据库中获取所有部门列表
     # queryset 是列表,每一个是封装了一行数据
     queryset = models.Department.objects.all()
+    depart_page = Pagination(request,queryset)
+    context = {
+        'queryset': depart_page.page_queryset,
+        'depart_page':depart_page.html()
+    }
 
-    return render(request, "depart_list.html", {'queryset': queryset})
+    return render(request, "depart_list.html", context)
 
 
 def depart_add(request):
     """添加部门"""
     # queryset 是列表,每一个是封装了一行数据
-    queryset = models.Department.objects.all()
+    # queryset = models.Department.objects.all()
 
     if request.method == "GET":
         return render(request, "depart_add.html")
@@ -134,14 +140,19 @@ def depart_update(request, nid):
 # 用户列表
 def user_list(request):
     """用户列表"""
-    userinfo = models.UserInfo.objects.all()
+    queryset = models.UserInfo.objects.all()
     # python获取字段内容
     # for obj in userinfo:
     #     print(obj.create_time.strftime("%Y-%m-%d"))
     #     print(obj.get_gender_display())  # 根据创建的元组数据反向搜索对应的中文内容
     #     print(obj.depart.title)  # 获取数据库存储字段值,如果是关联表可以通过定义的depart去获取关联表内容
+    user_page = Pagination(request, queryset)
+    context = {
+        'userinfo': user_page.page_queryset,
+        'user_page': user_page.html()
+    }
 
-    return render(request, "user_list.html", {'userinfo': userinfo})
+    return render(request, "user_list.html", context)
 
 
 def user_add(request):
@@ -189,28 +200,19 @@ def prettynum_list(request):
     search = request.GET.get("query", "")  # ""后面默认值为空值
     if search:
         dict_list["mobile__contains"] = search
-
-
     # 分页写法models.PrettyNum.objects.filter(**dict_list).order_by("-level")[0:10]
-
-
     queryset = models.PrettyNum.objects.filter(**dict_list).order_by("-level")
-    page_object = Pagination(request,queryset)
-    # 页码
-    """
-    <li class="page-item"><a class="page-link" href="/prettynum/list/">1</a></li>
-    <li class="page-item"><a class="page-link" href="/prettynum/list/">2</a></li>
-    <li class="page-item"><a class="page-link" href="/prettynum/list/">3</a></li>
-    """
+    page_object = Pagination(request, queryset)
+
     context = {
         'search': search,
-        'info': page_object.page_queryset,
+        'queryset': page_object.page_queryset,
         'page_string': page_object.html
     }
 
     # 通过会员等级方式倒叙排序，**dict_list为获取字典内容写法
     # info = models.PrettyNum.objects.filter(**dict_list).order_by("-level")
-    return render(request, "prettynum_list.html",context)
+    return render(request, "prettynum_list.html", context)
 
 
 def prettynum_add(request):
