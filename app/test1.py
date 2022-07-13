@@ -152,3 +152,35 @@ print(list, "初始列表")
 #     return list
 # print(quick_sort(list,0,len(list)-1))
 
+
+# def quicksort(list, left, right):
+#
+#     while left < right:
+#         temp = list[left]
+#         while left < right and temp <= list[right]:
+#             right -= 1
+#         list[left] = list[right]
+#         while left < right and temp >= list[left]:
+#             left += 1
+#         list[right] = list[left]
+#         list[left] = temp
+#         return left
+#
+#
+# def partion(list, left, right):
+#     if left < right:
+#         mid = quicksort(list, left, right)
+#         partion(list, 0, mid - 1)
+#         partion(list, mid + 1, right)
+#     return list
+#
+#
+# print(partion(list, 0, len(list) - 1))
+#
+def maopao(list):
+    for i in range(len(list)):
+        for j in range(len(list)-1):
+            if list[i]<=list[j]:
+                list[j],list[i] = list[i],list[j]
+    return list
+print(maopao(list))

@@ -44,9 +44,10 @@ class Pagination(object):
         query_dict._mutable = True
         self.query_dict = query_dict
         self.page_param = page_param
+        # self.query_dict.urlencode() 将请求参数拼接query=1&page=3
 
         # 分页处理
-        # 根据用户想要访问的页码计算出旗帜位置
+        # 根据用户想要访问的页码计算出起止位置
         page = request.GET.get(page_param, "1")
         if page.isdecimal():  # 判断传参是否是整形
             page = int(page)

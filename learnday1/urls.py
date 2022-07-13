@@ -15,28 +15,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app import views
+from app.views import depart,pretty,users,admin
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     #部门管理
-    path('depart/list/', views.depart_list),
-    path('depart/add/', views.depart_add),
-    path('depart/delete/', views.depart_delete),
+    path('depart/list/', depart.depart_list),
+    path('depart/add/', depart.depart_add),
+    path('depart/delete/', depart.depart_delete),
     # http://127.0.0.1:8000/<int:nid>/depart/update/ 默认以后传值中间必须有这个数字
-    path('depart/<int:nid>/update/', views.depart_update),
+    path('depart/<int:nid>/update/', depart.depart_update),
 
     #用户管理
-    path('user/list/', views.user_list),
-    path('user/add/',views.user_add),
-    path('user/<int:nid>/update/',views.user_update),
-    path('user/<int:nid>/delete/',views.user_delete),
+    path('user/list/', users.user_list),
+    path('user/add/',users.user_add),
+    path('user/<int:nid>/update/',users.user_update),
+    path('user/<int:nid>/delete/',users.user_delete),
 
 
     # 靓号管理
-    path('prettynum/list/',views.prettynum_list),
-    path('prettynum/add/', views.prettynum_add),
-    path('prettynum/<int:nid>/update/', views.prettynum_update),
-    path('prettynum/<int:nid>/delete/', views.prettynum_delete),
+    path('prettynum/list/',pretty.prettynum_list),
+    path('prettynum/add/', pretty.prettynum_add),
+    path('prettynum/<int:nid>/update/', pretty.prettynum_update),
+    path('prettynum/<int:nid>/delete/', pretty.prettynum_delete),
+
+    #管理员管理
+    path('admin/list',admin.admin_list)
 
 ]
