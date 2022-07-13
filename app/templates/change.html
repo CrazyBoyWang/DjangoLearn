@@ -1,15 +1,15 @@
 {% extends 'layout.html' %}
-{# 已作废 #}
+
 {% block content %}
    <div class="container">
         <div class="panel panel-default">
             <div class="table">
-                <div class="table-light">新建靓号</div>
+                <div class="table-light">{{ title }}</div>
             </div>
             <div class="panel-body">
                 <form method="post" novalidate><!--novalidate去掉界面信息判断-->
                     {% csrf_token %}
-                    {% for obj in pre %}
+                    {% for obj in forms %}
                         <div class="col-md-6" >
                             {{ obj.label }}: {{ obj }}
                             <span style="color: red">{{ obj.errors.0 }}</span>

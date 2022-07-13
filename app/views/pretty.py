@@ -28,14 +28,14 @@ def prettynum_list(request):
 
 def prettynum_add(request):
     if request.method == "GET":
-        pre = PrettyNum()
-        return render(request, "prettynum_add.html", {"pre": pre})
-    pre = PrettyNum(data=request.POST)
-    if pre.is_valid():
-        pre.save()
+        forms = PrettyNum()
+        return render(request, "change.html", {"forms": forms,"title":'添加靓号'})
+    forms = PrettyNum(data=request.POST)
+    if forms.is_valid():
+        forms.save()
         return redirect("/prettynum/list/")
     else:
-        return render(request, "prettynum_add.html", {"pre": pre})
+        return render(request, "change.html", {"forms": forms,"title":'添加靓号'})
 
 
 def prettynum_update(request, nid):

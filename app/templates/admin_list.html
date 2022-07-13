@@ -5,6 +5,13 @@
         <div style="margin-bottom: 10px">
             <a class="btn btn-success" href="/admin/add/">新建管理员</a>{# target="_blank" target添加为跳转到新页面 #}
         </div>
+      <div style="float: right">
+            <form class="d-flex " role="search" method="get">
+                <input class="text me-2" name="query" placeholder="用户名" aria-label="Search"
+                       value={{ search }} >
+                <button class="btn btn-outline-success" type="submit" >搜索</button>
+            </form>
+        </div>
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="ant-calendar-month-panel-header">
@@ -33,8 +40,8 @@
                         <th>{{ inf.username }}</th>
                         <th>{{ inf.password }}</th >
                         <td>
-                            <a class="btn btn-primary btn-xs" href="/prettynum/{{ inf.id }}/update">编辑</a>
-                            <a class="btn btn-danger btn-xs" href="/prettynum/{{ inf.id }}/delete">删除</a>
+                            <a class="btn btn-primary btn-xs" href="/admin/{{ inf.id }}/update">编辑</a>
+                            <a class="btn btn-danger btn-xs" href="/admin/{{ inf.id }}/delete">删除</a>
                         </td>
                     </tr>
                 {% endfor %}
