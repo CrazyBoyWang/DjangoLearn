@@ -31,6 +31,8 @@
                     <th>ID</th>
                     <th>用户名</th>
                     <th>密码</th>
+                    <th>重置密码</th>
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,6 +41,9 @@
                         <th>{{ inf.id }}</th>
                         <th>{{ inf.username }}</th>
                         <th>{{ inf.password }}</th >
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/admin/{{ inf.id }}/reset">重置密码</a>
+                        </td>
                         <td>
                             <a class="btn btn-primary btn-xs" href="/admin/{{ inf.id }}/update">编辑</a>
                             <a class="btn btn-danger btn-xs" href="/admin/{{ inf.id }}/delete">删除</a>

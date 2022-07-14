@@ -102,3 +102,34 @@ class AdminEditModelForm(BootstrapModelForm):
     class Meta:
         model = models.Admin
         fields = ['username']
+
+
+class AdminPwdRest(BootstrapModelForm):
+    confirm_password = forms.CharField(label='确认密码', widget=forms.PasswordInput)
+
+    class Meta:
+        model = models.Admin
+        fields = ['password', 'confirm_password']
+        # widgets = {
+        #     'password': forms.PasswordInput,
+        # }
+
+    def clean_password(self):  # 先对密码进行加密
+        password = self.cleaned_data.get("password")
+        md5_pwd = md5(password)
+        #判断密码是否和以前一致
+        exist =models.Admin.objects.filter(id=self.instance.pk,password=md5_pwd).exists()
+        if exist:
+            raise ValidationError("密码不能一致")
+        return md5_pwd
+
+    # 钩子方法 判断密码是否一致
+    def clean_confirm_password(self):
+        print(self.cleaned_data.get("confirm_password"))
+        password = self.cleaned_data.get("password")
+        confirm = md5(self.cleaned_data.get("confirm_password"))
+        if confirm != password:
+            raise ValidationError("密码不一致")
+        # 返回值是验证通过之后返回的时什么保存到数据库中就是什么
+        return confirm
+

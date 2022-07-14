@@ -1,0 +1,11 @@
+什么是cookie和session
+
+无状态 短连接
+
+cookie
+保存在浏览器上的键值对
+发送请求时，自动携带
+
+
+session概念（数据库，redis，文件）django默认存储在数据库中
+
