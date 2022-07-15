@@ -9,3 +9,14 @@ cookie
 
 session概念（数据库，redis，文件）django默认存储在数据库中
 
+需要在所有页面中添加判断。如果么有session则跳转到登录--鉴权
+
+django中间件
+    定义中间件
+
+
+    应用中间件，
+        在setting中添加中间件
+        MIDDLEWARE
+
+    在中间件中如果有返回值，直接进行返回，返回内容可以是httpResponse、render、redirect

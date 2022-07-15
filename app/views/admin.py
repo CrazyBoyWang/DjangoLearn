@@ -7,6 +7,12 @@ from app.forms.modelform import AdminModelForm, AdminEditModelForm, AdminPwdRest
 
 def admin_list(request):
     """管理员列表"""
+    #判断用户是否已经登录
+    #获取请求用户cookie字符串，判断在seesion中是否存在
+    # info = request.session.get("info")
+    # print(info)
+    # if not info:
+    #     return redirect("/login/")
 
     # 模糊搜索功能
     dict_list = {}
