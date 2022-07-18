@@ -30,27 +30,29 @@
     <!-- Custom styles for this template -->
     <link href="../static/plugin/bootstrap-5.1.3-dist/css/signin.css" rel="stylesheet">
 </head>
-<body class="text-center" >
+<body class="text-center">
 
-<main class="form-signin" >
+<main class="form-signin">
     <form novalidate method="post">
-    {% csrf_token %}
+        {% csrf_token %}
         <img class="mb-4" src="../static/img/drink.gif" alt="" width="240" height="64">
         <h1 class="h3 mb-3 fw-normal">你 进来呀！</h1>
 
         {% for forms in form %}
-        <div class="form-floating">
-              {{ forms }}
-{#            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">#}
-            <label>{{ forms.label }}</label>
-            <span style="color: red">{{ forms.errors.0 }}</span>
-        </div>
+            <div class="form-floating">
+                {{ forms }}
+                {#            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">#}
+                <label>{{ forms.label }}</label>
+                <span style="color: red">{{ forms.errors.0 }}</span>
+            </div>
         {% endfor %}
-{#        <div class="form-floating">#}
-{#            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">#}
-{#            <label for="floatingPassword">密码</label>#}
+        {#        <div class="form-floating">#}
+        {#            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">#}
+        {#            <label for="floatingPassword">密码</label>#}
 
-{#        </div>#}
+        {#        </div>#}
+        <img width="270" height="36" id="valid_code_img" src="/blog/get_valid_code_img/" alt=""
+             onclick="this.src='/blog/get_valid_code_img/?'+Math.random()">
 
         <div class="checkbox mb-3">
             <label>
@@ -60,7 +62,9 @@
         <button class="w-100 btn btn-lg btn-primary" type="submit">登录</button>
         <p class="mt-5 mb-3 text-muted">&copy; 俺也不知道看你心情</p>
     </form>
+
 </main>
+
 
 
 </body>

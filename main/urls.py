@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from app.views import depart,pretty,users,admin,account
+from app.utils import validCode
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -49,5 +50,7 @@ urlpatterns = [
 
     #登录
     path('login/', account.login),
+    path('logout/', account.logout),
+    re_path('get_valid_code_img/', account.get_valid_code_img, name='get_valid_code_img'),
 
 ]

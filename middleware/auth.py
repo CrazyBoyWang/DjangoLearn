@@ -9,14 +9,16 @@ class AuthMiddleware(MiddlewareMixin):
         # 排除不需要登录session就可以访问的页面，要不会产生多次重定向
         url_path = [
             '/login/',
+            '/blog/get_valid_code_img/',
         ]
-        print(request.path_info)
+        # print(request.path_info)
         if request.path_info in url_path:
             return None
 
         # 1、读取当前访问用户的session信息，如果获取成功测代表登录过
         # 在中间件中如果有返回值，直接进行返回，返回内容可以是httpResponse、render、redirect
         info_dict = request.session.get("info")
+
         if info_dict:
             # 如果为None则中间件继续执行。
             return None
