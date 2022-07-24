@@ -73,6 +73,19 @@ class PrettyNum(models.Model):
     status = models.SmallIntegerField(verbose_name="是否占用", choices=status_choice, default=1)
 
 class Admin(models.Model):
+    def __str__(self):
+        return self.username
     #管理员
     username = models.CharField(verbose_name="用户名",max_length=32)
     password = models.CharField(verbose_name="密码",max_length=64)
+
+class Task(models.Model):
+    level_choice = (
+        (1, "紧急"),
+        (2, "重要"),
+        (3, "临时"),
+    )
+    level = models.SmallIntegerField(verbose_name="级别",choices=level_choice,default=1)
+    title = models.CharField(verbose_name="标题",max_length=64)
+    detail = models.TextField(verbose_name="任务明细")
+    user = models.ForeignKey(verbose_name="负责人",to="Admin",on_delete=models.CASCADE)

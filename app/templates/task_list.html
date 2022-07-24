@@ -1,0 +1,150 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        {#<input type="button" class="btn-success" value="点击" onclick="clickMe();">DOM方式绑定#}
+        <div class="panel panel-default">
+            <div class="panel-heading">表单</div>
+            <div class="panel-body">
+                <form id="tasklist" novalidate><!--novalidate去掉界面信息判断-->
+                    {% for obj in form %}
+                        <div class="col-xs-6" >
+                            <label>{{ obj.label }}</label>
+                            {{ obj }}
+                            <span class="error-msg" style="color:red"></span>
+                        </div>
+                    {% endfor %}
+                    <div class="col-xs-12">
+                        <button type="button" id="enterList" class="btn btn-primary">保 存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <hr/>
+        <h3>ajax范例</h3>
+        <h3>示例1</h3>
+        <input type="button" class="btn-success" value="点击" id="btn1">
+        <h3>示例2</h3>
+        <input type="text" id="txtUser" placeholder="用户名">
+        <input type="text" id="txtAge" placeholder="年龄">
+        <input id="btn2" type="button" class="btn-success" placeholder="点击" value="点击">
+
+        <h3>示例3</h3>
+        {# 添加form表单并设置id信息。输入内容采用input方式。可以通过ajax以打包方式下发 #}
+        <form id="form3">
+            <input type="text" name="txtUser" placeholder="用户名">
+            <input type="text" name="txtAge" placeholder="年龄">
+            <input type="text" name="txtAge1" placeholder="年龄1">
+            <input type="text" name="txtAge2" placeholder="年龄2">
+            <input type="text" name="txtAge3" placeholder="年龄3">
+            <input type="text" name="txtAge4" placeholder="年龄4">
+            <input id="btn3" type="button" class="btn-success" placeholder="点击" value="点击">
+        </form>
+    </div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            {# 页面框架加载完成之后代码会自动执行 #}
+            bindBtn1Event();
+            bindBtn2Event();
+            bindBtn3Event();
+            tasklist();
+        })
+        {#函数绑定操作事件，触发即执行#}
+
+        function bindBtn1Event() {
+            $("#btn1").click(function () {
+                $.ajax(
+                    {
+                        url: '/task/ajax/',
+                        type: 'post',
+                        data: {
+                            n1: '222',
+                            n2: '3444'
+                        },
+                        dataType: "JSON", {# 将数据反序列为对象 #}
+                        success: function (res) {
+                            console.log(res);
+                        }
+                    }
+                )
+
+            })
+        }
+
+        function bindBtn2Event() {
+            $("#btn2").click(function () {
+                $.ajax(
+                    {
+                        url: '/task/ajax/',
+                        type: 'post',
+                        data: {
+                            n1: $("#txtUser").val(),
+                            n2: $("#txtAge").val(),
+                        },
+                        dataType: "JSON", {# 将数据反序列为对象 #}
+                        success: function (res) {
+                            console.log(res);
+                            console.log(res.status);
+                            console.log(res.data);
+                        }
+                    }
+                )
+
+            })
+        }
+
+
+        function bindBtn3Event() {
+            $("#btn3").click(function () {
+                $.ajax(
+                    {
+                        url: '/task/ajax/',
+                        type: 'post',
+                        data: $("#form3").serialize(), {# 打包代码 #}
+                        dataType: "JSON", {# 将数据反序列为对象 #}
+                        success: function (res) {
+                            console.log(res);
+                            console.log(res.status);
+                            console.log(res.data);
+                        }
+                    }
+                )
+
+            })
+        }
+
+        function tasklist() {
+            $("#enterList").click(function () {
+                $(".error-msg").empty();
+                $.ajax(
+                    {
+                        url: '/task/task_add/',
+                        type: 'post',
+                        data: $("#tasklist").serialize(), {# 打包代码 #}
+                        dataType: "JSON", {# 将数据反序列为对象 #}
+                        success: function (res) {
+                            console.log(res.status)
+                            if (res.status) {
+                                alert("添加成功")
+                            } else {
+                                $.each(res.error, function (name, data) {
+                                    //   console.log(name,data);
+                                    {#django自动生成的id信息是id_名字,.next是标签下面的错误信息，拿到数组的第0个元素就是报错信息#}
+                                    $("#id_" + name).next().text(data[0])
+
+                                })
+                            }
+
+                        }
+                    }
+                )
+
+            })
+        }
+
+
+    </script>
+
+{% endblock %}

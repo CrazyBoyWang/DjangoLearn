@@ -1,0 +1,90 @@
+浏览器向网站发送请求时：url和表单形式提交
+get
+post
+特点：页面刷新
+
+
+基于ajax请求方式：局部请求刷新
+依赖jQuery
+编写ajax代码
+
+    <script type="text/javascript">
+        $(function () {
+            {# 页面框架加载完成之后代码会自动执行 #}
+            bindBtn1Event();
+        })
+        {#函数绑定操作事件，触发即执行#}
+        function bindBtn1Event() {
+            $("#btn1").click(function () {
+                $.ajax(
+                    {
+                        url: '/task/ajax/',
+                        type: 'post',
+                        data: {
+                            n1: '222',
+                            n2: '3444'
+                        },
+                        success: function (res) {
+                            console.log(res);
+                        }
+                    }
+                )
+
+            })
+        }
+
+ajax返回是一个字典
+    可以将返回值调整
+    import json
+    data_dict = {"status": True, 'data': [11, 22, 33, 44]}
+    json_string = json.dumps(data_dict)
+    return HttpResponse(json_string)
+
+
+django中可以直接使用JsonResponse
+from django.http import JsonResponse
+return JsonResponse(data_dict)
+
+
+
+
+
+
+
+
+
+
+
+   function tasklist() {
+
+            $("#enterList").click(function () {
+                {#$(".error-msg").text("");#}
+
+                $.ajax(
+                    {
+                        url: '/task/task_add/',
+                        type: 'post',
+                        data: $("#enterList").serialize(), {# 打包代码 #}
+                        dataType: "JSON", {# 将数据反序列为对象 #}
+                        success: function (res) {
+                            console.log(res.status)
+                            if (res.status) {
+                                alert("添加成功")
+                                res.data
+                            } else {
+                                console.log(res.data)
+                                console.log(res.error);
+                                $.each(res.error, function (name, data) {
+                                    //   console.log(name,data);
+                                    {#django自动生成的id信息是id_名字,.next是标签下面的错误信息，拿到数组的第0个元素就是报错信息#}
+                                    $("#id_" + name).next().text(data[0])
+
+                                })
+                            }
+
+                        }
+                    }
+                )
+
+            })
+        }

@@ -13,44 +13,47 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path, re_path
-from app.views import depart,pretty,users,admin,account
-from app.utils import validCode
+
+from app.views import depart, pretty, users, admin, account, task
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    #部门管理
+    # 部门管理
     path('depart/list/', depart.depart_list),
     path('depart/add/', depart.depart_add),
     path('depart/delete/', depart.depart_delete),
     # http://127.0.0.1:8000/<int:nid>/depart/update/ 默认以后传值中间必须有这个数字
     path('depart/<int:nid>/update/', depart.depart_update),
 
-    #用户管理
+    # 用户管理
     path('user/list/', users.user_list),
-    path('user/add/',users.user_add),
-    path('user/<int:nid>/update/',users.user_update),
-    path('user/<int:nid>/delete/',users.user_delete),
-
+    path('user/add/', users.user_add),
+    path('user/<int:nid>/update/', users.user_update),
+    path('user/<int:nid>/delete/', users.user_delete),
 
     # 靓号管理
-    path('prettynum/list/',pretty.prettynum_list),
+    path('prettynum/list/', pretty.prettynum_list),
     path('prettynum/add/', pretty.prettynum_add),
     path('prettynum/<int:nid>/update/', pretty.prettynum_update),
     path('prettynum/<int:nid>/delete/', pretty.prettynum_delete),
 
-    #管理员管理
-    path('admin/list/',admin.admin_list),
-    path('admin/add/',admin.admin_add),
+    # 管理员管理
+    path('admin/list/', admin.admin_list),
+    path('admin/add/', admin.admin_add),
 
     path('admin/<int:nid>/update/', admin.admin_update),
     path('admin/<int:nid>/delete/', admin.admin_delete),
     path('admin/<int:nid>/reset/', admin.admin_reset),
 
-    #登录
+    # 登录
     path('login/', account.login),
     path('logout/', account.logout),
     re_path('get_valid_code_img/', account.get_valid_code_img, name='get_valid_code_img'),
+
+    # 任务管理
+    path('task/list/', task.task_list),
+    path('task/ajax/', task.task_ajax),
+    path('task/task_add/', task.task_add),
 
 ]

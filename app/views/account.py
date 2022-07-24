@@ -53,7 +53,7 @@ def login(request):
 
     form = LoginForm(data=request.POST, )
 
-    # 对用户名密码进行验证
+
     if form.is_valid():
 
         # 获取用户输入的字符串
@@ -70,11 +70,13 @@ def login(request):
         # print(request.session.get)
 
         # 判断验证码输入是否正确
+        # 对验证码进行验证
         if valid_code_str != enterValidCode:
             form.add_error("validCode", "验证码输入错误")
             return render(request, 'index.html', {'form': form})
 
         admin_object = models.Admin.objects.filter(**form.cleaned_data).first()
+        # 对用户名密码进行验证
         if not admin_object:
             # 主动添加报错信息
             form.add_error("password", "用户名或密码错误")
@@ -83,9 +85,11 @@ def login(request):
 
         # 网站生成随机字符串，写到用户浏览器cookie中。再输入到session
         # 数据会自动添加到django自动生成的`django_session`表中
-        request.session["info"] = {'id': admin_object.id, 'username': admin_object.username}
 
+        request.session["info"] = {'id': admin_object.id, 'username': admin_object.username}
+        request.session.set_expiry(60 * 60 * 24 * 7)
         return redirect('/admin/list')
+    # 重新设定session超时时间7天
 
     return render(request, 'index.html', {'form': form})
 
