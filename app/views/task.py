@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app import models
 from app.utils.bootstrap import BootstrapModelForm
+from app.utils.pagination import Pagination
 
 
 class TaskModelForm(BootstrapModelForm):
@@ -14,8 +15,17 @@ class TaskModelForm(BootstrapModelForm):
 
 
 def task_list(request):
-    form = TaskModelForm()
-    return render(request, "task_list.html", {"form": form})
+   # 数据库中获取所有任务
+   queryset = models.Task.objects.all().order_by("-id")
+   page_object = Pagination(request,queryset)
+   form = TaskModelForm()
+   context = {
+    "form": form,
+    "queryset": page_object.page_queryset,
+    "page_string": page_object.html()
+
+   }
+   return render(request, "task_list.html", context)
 
 
 # 去除token验证装饰器

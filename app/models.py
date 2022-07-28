@@ -25,6 +25,7 @@ class UserInfo(models.Model):
     # 无约束写法
     # depart_id = models.BigIntegerField(verbose_name="部门id")
 
+
     # 有约束写法
     # 员工表中只能存在已经存在的部门id---to表示与哪张表关联，to_fields表示关联的字段名
     # 如果关联的话。depart生成阶段会自动生成数据列depart_id
